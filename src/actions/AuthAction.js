@@ -10,7 +10,7 @@ const githubConfig = {
 export function startAuthorize() {
     return async dispatch => {
         dispatch({
-            type: 'AUTH',
+            type: 'SIGNIN',
         });
 
         const config = {
@@ -30,29 +30,41 @@ export function startAuthorize() {
 
         if (authState.accessToken) {
             dispatch({
-                type: 'AUTH_SUCCESS',
+                type: 'SIGNIN_SUCCESS',
                 payload: authState.accessToken,
+            });
+        } else {
+            dispatch({
+                type: 'SIGNIN_ERROR',
             });
         }
     }
 }
 
-export async function logout(token) {
-    const config = {
-        clientId: githubConfig.id,
-        redirectUrl: REDIRECT_URL,
-        scopes: ['identity'],
-        serviceConfiguration: {
-            revocationEndpoint:
-                'https://github.com/settings/connections/applications/'+githubConfig.id
-        }
+export function logout(token) {
+    return async dispatch => {
+        dispatch({
+            type: 'SIGNOUT',
+        });
+
+        const config = {
+            clientId: githubConfig.id,
+            redirectUrl: REDIRECT_URL,
+            scopes: ['identity'],
+            serviceConfiguration: {
+                revocationEndpoint:
+                    'https://github.com/settings/connections/applications/'+githubConfig.id
+            }
+        };
+
+        const result = await revoke(config, {
+            tokenToRevoke: token,
+            includeBasicAuth: true,
+            sendClientId: true,
+        });
+
+        dispatch({
+            type: 'SIGNOUT_SUCCESS',
+        });
     };
-
-    const result = await revoke(config, {
-        tokenToRevoke: token,
-        includeBasicAuth: true,
-        sendClientId: true,
-    });
-
-    return result;
 }
