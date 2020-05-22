@@ -4,13 +4,20 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import LoginScreen from "../screens/LoginScreen";
+import HomeScreen from "../screens/HomeScreen";
+import DetailScreen from "../screens/DetailScreen";
 
 const routes = [
     {
         name: 'Login', component: LoginScreen, options: {
-            title: 'Forgot Password ',
             headerShown: false
         }
+    },
+    {
+        name: 'Home', component: HomeScreen, options: {}
+    },
+    {
+        name: 'Detail', component: DetailScreen, options: {}
     },
 ];
 const Stack = createStackNavigator();
