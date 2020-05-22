@@ -18,3 +18,8 @@ Features :
 
 4. Infinite loading both repository and commit <br/>
 ![Login Feature](gifs/load-more-repo.gif)
+
+Technology / Frameworks :
+- React Native
+- Redux
+- Native Base
