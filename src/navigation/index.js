@@ -14,10 +14,20 @@ const routes = [
         }
     },
     {
-        name: 'Home', component: HomeScreen, options: {}
+        name: 'Home', component: HomeScreen, options: {
+            headerShown: false
+        }
     },
     {
-        name: 'Detail', component: DetailScreen, options: {}
+        name: 'Detail', component: DetailScreen, options: {
+            headerStyle: {
+                backgroundColor: '#333333',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+        }
     },
 ];
 const Stack = createStackNavigator();
