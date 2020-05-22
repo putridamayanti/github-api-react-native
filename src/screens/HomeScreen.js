@@ -30,7 +30,8 @@ class HomeScreen extends React.Component {
 
     _onScroll(e){
         const { layoutMeasurement, contentOffset, contentSize } = e.nativeEvent;
-        const bottom = layoutMeasurement.height + contentOffset.y >= contentSize.height;
+        const bottom = layoutMeasurement.height + contentOffset.y + 10 >= contentSize.height;
+
         if (bottom) {
             this.loadMore();
         }
@@ -50,16 +51,20 @@ class HomeScreen extends React.Component {
         this.props.navigation.replace('Login');
     }
 
-    renderLists(items) {
+    renderLists(items, load_more) {
         if (items.length === 0) {
             return (
-                <View>
+                <View style={{ display: 'flex', alignItems: 'center'}}>
                     <Text>No Result Found</Text>
                 </View>
             )
         } else {
             return (
-                <ListRepo items={items} navigation={this.props.navigation}/>
+                <ScrollView onScroll={(e) => this._onScroll(e)}>
+                    <ListRepo items={items} navigation={this.props.navigation}/>
+
+                    { load_more ? <Spinner color='#3d3d3d' /> : <></> }
+                </ScrollView>
             )
         }
     }
@@ -88,16 +93,20 @@ class HomeScreen extends React.Component {
                     </Item>
                 </View>
 
-                { loading ? <Spinner color='#3d3d3d' /> : <></>}
+                { loading ? <Spinner color='#3d3d3d' /> : (
+                    <>
+                        { this.renderLists(repos, load_more)}
+                    </>
+                )}
 
-                { !loading ? <>
-                    { repos !== '' && repos !== undefined ? (
-                        <ScrollView onScroll={(e) => this._onScroll(e)}>
-                            <ListRepo items={repos} navigation={navigation}/>
-                            { load_more ? <Spinner color='#3d3d3d' /> : <></> }
-                        </ScrollView>
-                    ) : <Text>No Result Found</Text>}
-                </> : <></>}
+                {/*{ !loading ? <>*/}
+                {/*    { repos !== '' && repos !== undefined ? (*/}
+                {/*        <ScrollView onScroll={(e) => this._onScroll(e)}>*/}
+                {/*            <ListRepo items={repos} navigation={navigation}/>*/}
+                {/*            { load_more ? <Spinner color='#3d3d3d' /> : <></> }*/}
+                {/*        </ScrollView>*/}
+                {/*    ) : <Text>No Result Found</Text>}*/}
+                {/*</> : <></>}*/}
             </Container>
         );
     }
