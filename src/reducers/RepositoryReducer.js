@@ -1,8 +1,9 @@
 let initialState = {
     loading: true,
-    loading_commit: true,
-    items: [],
-    commits: [],
+    load_more: false,
+    current_page: 0,
+    next_page: 0,
+    repos: [],
     error: ''
 };
 
@@ -13,35 +14,30 @@ export default (state = initialState, action) => {
         case 'SEARCH_REPO':
             return {
                 ...state,
-                loading: true,
+                loading: state.current_page === 0,
+                load_more: state.current_page > 0
             };
         case 'SEARCH_REPO_SUCCESS':
+            const { items, current_page, next_page } = result;
+            let data = [];
+            if (current_page === 1) {
+                data = items;
+            } else {
+                data = state.repos.concat(items);
+            }
+
             return {
                 ...state,
                 loading: false,
-                items: result
+                load_more: false,
+                current_page: current_page,
+                next_page: next_page,
+                repos: data,
             };
         case 'SEARCH_REPO_ERROR':
             return {
                 ...state,
                 loading: false,
-                error: 'There is something wrong!'
-            };
-        case 'SEARCH_COMMIT':
-            return {
-                ...state,
-                loading_commit: true,
-            };
-        case 'SEARCH_COMMIT_SUCCESS':
-            return {
-                ...state,
-                loading_commit: false,
-                commits: result
-            };
-        case 'SEARCH_COMMIT_ERROR':
-            return {
-                ...state,
-                loading_commit: false,
                 error: 'There is something wrong!'
             };
         default:

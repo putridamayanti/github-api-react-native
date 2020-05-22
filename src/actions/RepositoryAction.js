@@ -1,9 +1,10 @@
 import { BASE_URL } from "../constants/Api";
 
-export function searchRepo(name, sort = 'stars') {
+export function searchRepo(name, page) {
     const url = BASE_URL + '/search/repositories?' +
-        'q='+ name +'&' +
-        'sort='+ sort +'&order=desc';
+        'q='+ name + '&' +
+        'sort=stars&order=desc&' +
+        'page=' + page;
 
     return async dispatch => {
         dispatch({
@@ -17,10 +18,14 @@ export function searchRepo(name, sort = 'stars') {
             })
             .then(json => {
                 const items = json.items;
-                // console.log(items);
+
                 dispatch({
                     type: 'SEARCH_REPO_SUCCESS',
-                    payload: items,
+                    payload: {
+                        items: items,
+                        current_page: page,
+                        next_page: page + 1
+                    },
                 })
             })
             .catch((error) => {
@@ -33,8 +38,8 @@ export function searchRepo(name, sort = 'stars') {
     }
 }
 
-export function searchCommit(repo) {
-    const url = BASE_URL + '/repos/' + repo + '/commits';
+export function searchCommit(repo, page) {
+    const url = BASE_URL + '/repos/' + repo + '/commits?page=' + page;
     console.log(url);
     return async dispatch => {
         dispatch({
@@ -49,7 +54,11 @@ export function searchCommit(repo) {
             .then(json => {
                 dispatch({
                     type: 'SEARCH_COMMIT_SUCCESS',
-                    payload: json,
+                    payload: {
+                        items: json,
+                        current_page: page,
+                        next_page: page + 1
+                    },
                 })
             })
             .catch((error) => {
