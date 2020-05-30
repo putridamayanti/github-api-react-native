@@ -1,10 +1,19 @@
 import React from 'react';
-import { View } from 'react-native';
+import styled from "styled-components";
 import {
     Body, Button, Icon, Left, List, ListItem, Right, Text,
     Card, CardItem, Thumbnail
 } from 'native-base';
 import moment from "moment";
+import {View} from "react-native";
+
+const AuthorName = styled(Text)`
+    font-weight: 600
+`;
+
+const Time = styled(Text)`
+    font-weight: 300
+`;
 
 export default class ListCommit extends React.Component {
     render() {
@@ -28,9 +37,9 @@ export default class ListCommit extends React.Component {
                             <Body>
                                 <Text numberOfLines={1}>{ item.commit.message }</Text>
                                 <Text note numberOfLines={2}>
-                                    <Text style={{ fontWeight: '600' }}>{ item.commit.author.name }</Text> authored and
+                                    <AuthorName>{ item.commit.author.name }</AuthorName> authored and
                                     <Text > { item.commit.committer.name}</Text> committed at
-                                    <Text style={{ fontWeight: '300' }}> { time }</Text>
+                                    <Time> { time }</Time>
                                 </Text>
                             </Body>
                         </ListItem>

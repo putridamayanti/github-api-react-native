@@ -1,37 +1,55 @@
 import React from 'react';
 import { View } from 'react-native';
-import {Body, Button, Card, Icon, Left, List, ListItem, Right, Text, Thumbnail,
-    Grid, Row, Col } from 'native-base';
-// import Icon from 'react-native-vector-icons/FontAwesome5';
+import styled from "styled-components";
+import { Button, Card, Icon, List, Text, Thumbnail } from 'native-base';
+
+const ListView = styled(View)`
+    padding: 10px 20px;
+`;
+
+const CardView = styled(View)`
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`;
+
+const CardContent = styled(View)`
+    width: 180px;
+`;
+
+const IconEye = styled(Icon)`
+    color: #8a8888;
+`;
 
 export default class ListRepo extends React.Component {
     render() {
         const { items, navigation } = this.props;
 
         return (
-            <List style={{ padding: 20, paddingTop: 10 }}>
+            <ListView>
                 { items.map((item, key) => {
                     return (
-                        <Card style={{ padding: 15 }} key={key}>
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Card key={key}>
+                            <CardView>
                                 <Thumbnail square source={{ uri: item.owner.avatar_url }} />
 
-                                <View style={{ width: 180 }}>
+                                <CardContent>
                                     <Text>{ item.name }</Text>
                                     <Text note numberOfLines={1}>
                                         { item.description }
                                     </Text>
-                                </View>
+                                </CardContent>
 
                                 <Button transparent
                                         onPress={() => navigation.navigate('Detail', { repo: item.full_name})}>
-                                    <Icon name='eye' style={{ color: '#8a8888'}} />
+                                    <IconEye name='eye' />
                                 </Button>
-                            </View>
+                            </CardView>
                         </Card>
                     );
                 })}
-            </List>
+            </ListView>
         );
     }
 }

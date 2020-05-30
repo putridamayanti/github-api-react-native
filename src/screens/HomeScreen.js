@@ -9,6 +9,8 @@ import { logout } from "../actions/AuthAction";
 import { searchRepo } from "../actions/RepositoryAction";
 
 import AppBar from "../components/AppBar";
+import EmptyMessage from "../components/EmptyMessage";
+import FormInput from "../components/FormInput";
 import ListRepo from "../components/ListRepo";
 
 class HomeScreen extends React.Component {
@@ -54,10 +56,8 @@ class HomeScreen extends React.Component {
     renderLists(items, load_more) {
         if (items.length === 0) {
             return (
-                <View style={{ display: 'flex', alignItems: 'center'}}>
-                    <Text>No Result Found</Text>
-                </View>
-            )
+                <EmptyMessage message="No Result Found"/>
+            );
         } else {
             return (
                 <ScrollView onScroll={(e) => this._onScroll(e)}>
@@ -75,7 +75,7 @@ class HomeScreen extends React.Component {
         return (
             <Container>
                 <AppBar title="Home" onPress={() => this.logout()}/>
-                <View style={{ margin: 15, padding: 5 }}>
+                <FormInput>
                     <Item>
                         <Input placeholder='Enter repo name eg.react-native'
                                value={ this.state.reponame }
@@ -91,22 +91,13 @@ class HomeScreen extends React.Component {
                             <Icon name='search' />
                         </Button>
                     </Item>
-                </View>
+                </FormInput>
 
                 { loading ? <Spinner color='#3d3d3d' /> : (
                     <>
                         { this.renderLists(repos, load_more)}
                     </>
                 )}
-
-                {/*{ !loading ? <>*/}
-                {/*    { repos !== '' && repos !== undefined ? (*/}
-                {/*        <ScrollView onScroll={(e) => this._onScroll(e)}>*/}
-                {/*            <ListRepo items={repos} navigation={navigation}/>*/}
-                {/*            { load_more ? <Spinner color='#3d3d3d' /> : <></> }*/}
-                {/*        </ScrollView>*/}
-                {/*    ) : <Text>No Result Found</Text>}*/}
-                {/*</> : <></>}*/}
             </Container>
         );
     }

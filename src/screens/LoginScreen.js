@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from "styled-components";
 import { View, Image } from "react-native";
 import { Text, Button, Icon } from "native-base";
 import { connect } from "react-redux";
@@ -6,7 +7,25 @@ import { connect } from "react-redux";
 import { startAuthorize } from '../actions/AuthAction';
 
 import ErrorMessage from "../components/ErrorMessage";
+import Loading from "../components/Loading";
+
 import logo from '../assets/images/logo.png';
+
+const Login = styled(View)`
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const ButtonLogin = styled(Button)`
+    margin: 20px 0;
+`;
+
+const ImageLogo = styled(Image)`
+    width: 150px;
+    height: 50px;
+`;
 
 class LoginScreen extends React.Component {
     constructor(props) {
@@ -16,32 +35,30 @@ class LoginScreen extends React.Component {
     render() {
         const { is_logingin, token, login_error, navigation } = this.props;
 
-        console.log('Token', token);
         if (token !== '' && token !== undefined) {
             navigation.replace('Home', { token: token });
         }
 
         return (
-            <View style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Image source={ logo } style={{ width: 150, height: 50 }}/>
+            <Login>
+                <ImageLogo source={ logo }/>
 
                 { is_logingin ? (
-                    <View style={{ marginTop: 20 }}>
+                    <Loading>
                         <Text>Signing In ...</Text>
-                    </View>
+                    </Loading>
                 ) : (
                     <View>
-                        { login_error !== '' ? (
-                            <ErrorMessage message={ login_error }/>
-                        ) : (
-                            <Button dark style={{ marginTop: 50 }}
-                                    onPress={() => this.props.startAuthorize()}>
-                                <Text>Login with Github</Text>
-                            </Button>
+                        { login_error !== '' && (
+                            <ErrorMessage message={  login_error }/>
                         )}
+
+                        <ButtonLogin dark onPress={() => this.props.startAuthorize()}>
+                            <Text>Login with Github</Text>
+                        </ButtonLogin>
                     </View>
                 )}
-            </View>
+            </Login>
         );
     }
 }
