@@ -1,11 +1,5 @@
+import { GITHUB_ID, GITHUB_SECRET, GITHUB_REDIRECT_URL} from 'react-native-dotenv';
 import { authorize, revoke } from 'react-native-app-auth';
-
-const REDIRECT_URL = 'com.githubapi://my-host/';
-
-const githubConfig = {
-    id: 'e102ac136f9a21004cc3', // Your github id application
-    secret: '710a2a5b60b073622501412e8f085af814ea0173' // Your github secret application
-};
 
 export function startAuthorize() {
     return async dispatch => {
@@ -14,57 +8,61 @@ export function startAuthorize() {
         });
 
         const config = {
-            redirectUrl: REDIRECT_URL,
-            clientId: githubConfig.id,
-            clientSecret: githubConfig.secret,
+            redirectUrl: GITHUB_REDIRECT_URL,
+            clientId: GITHUB_ID,
+            clientSecret: GITHUB_SECRET,
             scopes: ['identity'],
             serviceConfiguration: {
                 authorizationEndpoint: 'https://github.com/login/oauth/authorize',
                 tokenEndpoint: 'https://github.com/login/oauth/access_token',
                 revocationEndpoint:
-                    'https://github.com/settings/connections/applications/'+githubConfig.id
+                    'https://github.com/settings/connections/applications/' + GITHUB_ID
             }
         };
 
-        const authState = await authorize(config);
-
-        if (authState.accessToken) {
-            dispatch({
-                type: 'SIGNIN_SUCCESS',
-                payload: authState.accessToken,
+        return authorize(config)
+            .then((result) => {
+                if (result.accessToken) {
+                    dispatch({
+                        type: 'SIGNIN_SUCCESS',
+                        payload: result.accessToken,
+                    });
+                } else {
+                    dispatch({
+                        type: 'SIGNIN_ERROR',
+                    });
+                }
+            }).catch(error => {
+                    dispatch({
+                        type: 'SIGNIN_ERROR',
+                    });
             });
-        } else {
-            dispatch({
-                type: 'SIGNIN_ERROR',
-            });
-        }
     }
 }
 
 export function logout(token) {
-    return async dispatch => {
+    return dispatch => {
         dispatch({
             type: 'SIGNOUT',
         });
 
         const config = {
-            clientId: githubConfig.id,
-            redirectUrl: REDIRECT_URL,
+            clientId: GITHUB_ID,
+            redirectUrl: GITHUB_REDIRECT_URL,
             scopes: ['identity'],
             serviceConfiguration: {
                 revocationEndpoint:
-                    'https://github.com/settings/connections/applications/'+githubConfig.id
+                    'https://github.com/settings/connections/applications/' + GITHUB_ID
             }
         };
 
-        const result = await revoke(config, {
+        return revoke(config, {
             tokenToRevoke: token,
-            includeBasicAuth: true,
             sendClientId: true,
-        });
-
-        dispatch({
-            type: 'SIGNOUT_SUCCESS',
+        }).then(result => {
+            dispatch({
+                type: 'SIGNOUT_SUCCESS',
+            });
         });
     };
 }
