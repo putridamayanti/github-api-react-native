@@ -1,4 +1,4 @@
-import { BASE_URL } from "../constants/Api";
+import {BASE_URL} from '../constants/Api';
 
 export function searchRepo(name, page) {
     const url = BASE_URL + '/search/repositories?' +

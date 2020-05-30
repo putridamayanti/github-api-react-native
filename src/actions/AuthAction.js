@@ -1,5 +1,9 @@
-import { GITHUB_ID, GITHUB_SECRET, GITHUB_REDIRECT_URL} from 'react-native-dotenv';
-import { authorize, revoke } from 'react-native-app-auth';
+import {
+    GITHUB_ID,
+    GITHUB_SECRET,
+    GITHUB_REDIRECT_URL
+} from 'react-native-dotenv';
+import {authorize, revoke} from 'react-native-app-auth';
 
 export function startAuthorize() {
     return async dispatch => {
@@ -15,13 +19,12 @@ export function startAuthorize() {
             serviceConfiguration: {
                 authorizationEndpoint: 'https://github.com/login/oauth/authorize',
                 tokenEndpoint: 'https://github.com/login/oauth/access_token',
-                revocationEndpoint:
-                    'https://github.com/settings/connections/applications/' + GITHUB_ID
+                revocationEndpoint: 'https://github.com/settings/connections/applications/' + GITHUB_ID
             }
         };
 
         return authorize(config)
-            .then((result) => {
+            .then(result => {
                 if (result.accessToken) {
                     dispatch({
                         type: 'SIGNIN_SUCCESS',
@@ -32,7 +35,8 @@ export function startAuthorize() {
                         type: 'SIGNIN_ERROR',
                     });
                 }
-            }).catch(error => {
+            })
+            .catch(error => {
                     dispatch({
                         type: 'SIGNIN_ERROR',
                     });
@@ -51,15 +55,15 @@ export function logout(token) {
             redirectUrl: GITHUB_REDIRECT_URL,
             scopes: ['identity'],
             serviceConfiguration: {
-                revocationEndpoint:
-                    'https://github.com/settings/connections/applications/' + GITHUB_ID
+                revocationEndpoint: 'https://github.com/settings/connections/applications/' + GITHUB_ID
             }
         };
 
         return revoke(config, {
             tokenToRevoke: token,
             sendClientId: true,
-        }).then(result => {
+        })
+            .then(result => {
             dispatch({
                 type: 'SIGNOUT_SUCCESS',
             });
